@@ -4,7 +4,7 @@
 Tämä projekti on osa Helsingin yliopiston tietojenkäsittelytieteen kandiohjelman kurssia Aineopintojen harjoitustyö: Algoritmit ja tekoäly. Projekti toteutetaan Pythonilla (käyttämäni versio on 3.12.8) ja dokumentaation kielenä on suomi. Vertaisarviointia voin tehdä Pythonin lisäksi C#-kielellä tehtyihin projekteihin, sekä suomeksi että englanniksi.
 
 ## Aihe ja toteutus
-Tässä harjoitustyössä tarkoitukseni on toteuttaa mukautetulla Expectiminimax-algoritmilla tekoäly, joka toimii [2048](https://en.wikipedia.org/wiki/2048_(video_game))-pelin päätöksenteon taustalla. Algoritmia mukautetaan toimimaan yksinpelinä kaksinpelin sijaan, jossa vastapelaaja korvataan pelin satunnaistapahtumilla.
+Tässä harjoitustyössä tarkoitukseni on toteuttaa mukautetulla Expectiminimax-algoritmilla (Expectimax) tekoäly, joka toimii [2048](https://en.wikipedia.org/wiki/2048_(video_game))-pelin päätöksenteon taustalla. Algoritmia mukautetaan toimimaan yksinpelinä kaksinpelin sijaan, joten vastapelaaja jätetään pois.
 
 ## Ydin
 Ydin on satunnaistapahtumia sisältävän pelin päätöksentekoalgoritmin toteuttaminen, sekä heuristisen arviointifunktion käyttö pelitilanteen arvioimisessa. Algoritmin tulee arvioida pelitilannetta useamman siirron eteenpäin, ottaa huomioon parhaat mahdolliset siirrot sekä pelin satunnaisen luonteen sekä satunnaistapahtumien todennäköisyydet. Algoritmi pyrkii maksimoimaan laattojen arvon ja sitä myöten kokonaispisteet, ilman että peli päättyy.
