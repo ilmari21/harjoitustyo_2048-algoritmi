@@ -32,6 +32,14 @@ class Bitboard:
         """Return the indexes of all empty cells."""
         return [index for index in range(16) if self.get_cell(index) == 0]
 
+    def game_over_check(self) -> bool:
+        """Checks whether it is possible to make any more moves on the board."""
+        directions = ('left', 'right', 'up', 'down')
+        return all(
+            self.move(direction).return_board() == self.board
+            for direction in directions
+        )
+
     @staticmethod
     def _move_line(cells: list[int], reverse: bool = False) -> list[int]:
         """Move and merge four cells."""
@@ -79,6 +87,7 @@ class Bitboard:
         return self._move_columns('col_down')
 
     def _move_rows(self, table_name: str) -> 'Bitboard':
+        """Move the rows of the board."""
         tables = get_lookup_tables()
         table = tables[table_name]
         board = Bitboard()
@@ -89,6 +98,7 @@ class Bitboard:
         return board
 
     def _move_columns(self, table_name: str) -> 'Bitboard':
+        """Move the columns of the board."""
         table = get_lookup_tables()[table_name]
         board = Bitboard()
 
