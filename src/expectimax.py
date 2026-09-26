@@ -17,10 +17,11 @@ class Expectimax:
         best_score = float("-inf")
 
         for direction in self.get_valid_moves(board):
-            score = self.expectimax_chance_node(
-                board.move(direction),
-                depth
-            )
+            moved_board = board.move(direction)
+            if depth == 1:
+                score = self.heuristics.evaluate(moved_board)
+            else:
+                score = self.expectimax_chance_node(moved_board, depth)
             best_score = max(best_score, score)
 
         return best_score
@@ -31,10 +32,11 @@ class Expectimax:
         best_score = float("-inf")
 
         for direction in self.get_valid_moves(board):
-            score = self.expectimax_chance_node(
-                board.move(direction),
-                self.depth
-            )
+            moved_board = board.move(direction)
+            if self.depth == 1:
+                score = self.heuristics.evaluate(moved_board)
+            else:
+                score = self.expectimax_chance_node(moved_board, self.depth)
             if score > best_score:
                 best_score = score
                 best_move = direction
