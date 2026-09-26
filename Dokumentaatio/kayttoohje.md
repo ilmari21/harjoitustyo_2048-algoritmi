@@ -1,8 +1,8 @@
 # Käyttöohje
 
-Projektin voi ladata [täältä](https://github.com/ilmari21/harjoitustyo_2048-algoritmi) klikkaamalla **Source code**.
+Projektin voi ladata [täältä](https://github.com/ilmari21/harjoitustyo_2048-algoritmi) klikkaamalla **Code**.
 
-## Sovelluksen käytön aloitus
+## Käyttö
 
 1. Asenna poetry:
 
@@ -14,9 +14,8 @@ tämä saattaa johtaa virheilmoitukseen "The current project could not be instal
 poetry install --no-root
 ```
 jolloin virheilmoitusta ei pitäisi tulla.
-```
 
-2. Sovelluksen käynnistäminen:
+2. Käynnistäminen:
 
 Algoritmin voi suorittaa komennolla:
 
