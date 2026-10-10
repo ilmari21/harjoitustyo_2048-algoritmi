@@ -88,32 +88,40 @@ class Bitboard:
 
     def _move_rows(self, table_name: str) -> 'Bitboard':
         """Move the rows of the board."""
-        tables = get_lookup_tables()
-        table = tables[table_name]
-        board = Bitboard()
+        table = get_lookup_tables()[table_name]
+        value = self.board
+        moved_board = (
+            table[value & self.ROW_CONSTANT]
+            | (table[(value >> 16) & self.ROW_CONSTANT] << 16)
+            | (table[(value >> 32) & self.ROW_CONSTANT] << 32)
+            | (table[(value >> 48) & self.ROW_CONSTANT] << 48)
+        )
 
-        for row in range(4):
-            board = board.set_row(row, table[self.get_row(row)])
-
-        return board
+        return Bitboard(moved_board)
 
     def _move_columns(self, table_name: str) -> 'Bitboard':
         """Move the columns of the board."""
         table = get_lookup_tables()[table_name]
-        board = Bitboard()
+        value = self.board
+        moved_board = 0
 
         for column in range(4):
-            packed = sum(
-                self.get_cell(row * 4 + column) << (row * 4)
-                for row in range(4)
+            shift = column * 4
+            packed = (
+                ((value >> shift) & self.CELL_CONSTANT)
+                | (((value >> (shift + 16)) & self.CELL_CONSTANT) << 4)
+                | (((value >> (shift + 32)) & self.CELL_CONSTANT) << 8)
+                | (((value >> (shift + 48)) & self.CELL_CONSTANT) << 12)
             )
-            moved = table[packed]
+            moved_column = table[packed]
+            moved_board |= (
+                ((moved_column & self.CELL_CONSTANT) << shift)
+                | (((moved_column >> 4) & self.CELL_CONSTANT) << (shift + 16))
+                | (((moved_column >> 8) & self.CELL_CONSTANT) << (shift + 32))
+                | (((moved_column >> 12) & self.CELL_CONSTANT) << (shift + 48))
+            )
 
-            for row in range(4):
-                cell = (moved >> (row * 4)) & self.CELL_CONSTANT
-                board = board.set_cell(row * 4 + column, cell)
-
-        return board
+        return Bitboard(moved_board)
 
     def __str__(self) -> str:
         """Returns a string representation of the current board."""

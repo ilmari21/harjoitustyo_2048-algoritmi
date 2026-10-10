@@ -2,10 +2,29 @@ from bitboard import Bitboard
 from heuristics import Heuristics
 
 class Expectimax:
-    def __init__(self, depth):
+    MAX_DEPTH = 4
+
+    def __init__(self, depth: int = MAX_DEPTH):
+        if not 1 <= depth <= self.MAX_DEPTH:
+            raise ValueError(f"Depth must be between 1 and {self.MAX_DEPTH}.")
         self.transposition_table: dict[tuple[str, int, int], float] = {}
         self.depth = depth
         self.heuristics = Heuristics()
+
+    def get_search_depth(self, board: Bitboard) -> int:
+        """Choose a deeper search as the number of empty cells decreases."""
+        empty_cells = len(board.get_empty_cells())
+
+        if empty_cells > 12:
+            target_depth = 1
+        elif empty_cells > 8:
+            target_depth = 2
+        elif empty_cells > 4:
+            target_depth = 3
+        else:
+            target_depth = 4
+
+        return min(target_depth, self.depth)
 
     def expectimax(self, board: Bitboard, depth: int | None = None) -> float:
         """Returns the expected score of a board position using the expectimax algorithm."""
@@ -19,13 +38,13 @@ class Expectimax:
         if key in self.transposition_table:
             return self.transposition_table[key]
 
-        if board.game_over_check():
-            return self.heuristics.evaluate(board)
-
         best_score = float("-inf")
 
-        for direction in self.get_valid_moves(board):
-            moved_board = board.move(direction)
+        valid_moves = self.get_valid_moves(board)
+        if not valid_moves:
+            return self.heuristics.evaluate(board)
+
+        for _, moved_board in valid_moves:
             if depth == 1:
                 score = self.heuristics.evaluate(moved_board)
             else:
@@ -38,15 +57,15 @@ class Expectimax:
     def get_best_move(self, board: Bitboard) -> str | None:
         """Returns the valid move with the highest expected score."""
         self.transposition_table.clear()
+        search_depth = self.get_search_depth(board)
         best_move = None
         best_score = float("-inf")
 
-        for direction in self.get_valid_moves(board):
-            moved_board = board.move(direction)
-            if self.depth == 1:
+        for direction, moved_board in self.get_valid_moves(board):
+            if search_depth == 1:
                 score = self.heuristics.evaluate(moved_board)
             else:
-                score = self.expectimax_chance_node(moved_board, self.depth)
+                score = self.expectimax_chance_node(moved_board, search_depth)
             if score > best_score:
                 best_score = score
                 best_move = direction
@@ -54,12 +73,16 @@ class Expectimax:
         return best_move
 
     @staticmethod
-    def get_valid_moves(board: Bitboard) -> list[str]:
+    def get_valid_moves(board: Bitboard) -> list[tuple[str, Bitboard]]:
         """Return a list of valid moves for the given board."""
+        current_board = board.return_board()
         valid_moves = []
-        for direction in ('left', 'right', 'up', 'down'):
-            if board.move(direction).return_board() != board.return_board():
-                valid_moves.append(direction)
+
+        for direction in ("left", "right", "up", "down"):
+            moved_board = board.move(direction)
+            if moved_board.return_board() != current_board:
+                valid_moves.append((direction, moved_board))
+
         return valid_moves
 
     def expectimax_chance_node(self, board: Bitboard, depth: int) -> float:
