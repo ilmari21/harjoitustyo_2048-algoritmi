@@ -1,6 +1,7 @@
 from bitboard import Bitboard
 from heuristics import Heuristics
 
+
 class Expectimax:
     MAX_DEPTH = 4
 

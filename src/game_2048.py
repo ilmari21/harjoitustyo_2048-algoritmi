@@ -1,6 +1,7 @@
 import random
 from bitboard import Bitboard
 
+
 class Game2048:
     def __init__(self, rng: random.Random | None = None):
         self.rng = rng if rng is not None else random.Random()
@@ -33,7 +34,8 @@ class Game2048:
         if moved_board.return_board() == self.board.return_board():
             return False
 
-        self.score += self._tile_score(moved_board) - self._tile_score(self.board)
+        self.score += self._tile_score(moved_board) - \
+            self._tile_score(self.board)
         self.board = moved_board
         self.spawn_random_tile()
         return True

@@ -1,5 +1,6 @@
 from bitboard import Bitboard
 
+
 class Heuristics:
     SNAKE_WEIGHTS = (
         4 ** 15, 4 ** 14, 4 ** 13, 4 ** 12,

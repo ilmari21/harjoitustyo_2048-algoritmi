@@ -1,6 +1,7 @@
 from lookup_tables import get_lookup_tables
 from move_logic import move_line
 
+
 class Bitboard:
     CELL_CONSTANT = 0xF
     BOARD_CONSTANT = (1 << 64) - 1

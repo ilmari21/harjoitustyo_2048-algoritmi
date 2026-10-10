@@ -12,3 +12,7 @@ def start(ctx):
 def play(ctx):
     """Play the game."""
     ctx.run(f"{executable} src/human_playtest.py", pty=use_pty)
+
+@task
+def format(ctx):
+    ctx.run("autopep8 --in-place --recursive src", pty=use_pty)

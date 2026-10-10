@@ -23,7 +23,8 @@ class TestHeuristics(unittest.TestCase):
 
     def test_evaluate_empty_and_full_boards(self):
         heuristics = Heuristics()
-        self.assertEqual(heuristics.evaluate(Bitboard()), 16 * Heuristics.EMPTY_CELL_WEIGHT)
+        self.assertEqual(heuristics.evaluate(Bitboard()),
+                         16 * Heuristics.EMPTY_CELL_WEIGHT)
 
         full_board = Bitboard()
         for index in range(16):
