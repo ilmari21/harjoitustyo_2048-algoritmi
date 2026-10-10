@@ -1,11 +1,14 @@
 from invoke import task
+from sys import executable
+from os import name
+use_pty = name != "nt"
 
 @task
 def start(ctx):
     """Start the algorithm."""
-    ctx.run("python3 src/main.py")
+    ctx.run(f"{executable} src/main.py", pty=use_pty)
 
 @task
 def play(ctx):
     """Play the game."""
-    ctx.run("python3 src/human_playtest.py")
+    ctx.run(f"{executable} src/human_playtest.py", pty=use_pty)

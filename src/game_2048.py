@@ -42,7 +42,8 @@ class Game2048:
         """Returns the board as an integer."""
         return self.board.return_board()
 
-    def _tile_score(self, board: Bitboard) -> int:
+    @staticmethod
+    def _tile_score(board: Bitboard) -> int:
         """Calculate the score gained from the move."""
         score = 0
         for i in range(16):

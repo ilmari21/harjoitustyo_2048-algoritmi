@@ -1,6 +1,6 @@
 from game_2048 import Game2048
 
-def main():
+def human_playtest():
     game = Game2048()
     print("Gameboard:")
     print(game.board)
@@ -27,4 +27,4 @@ def main():
     print(game.board)
 
 if __name__ == "__main__":
-    main()
+    human_playtest()

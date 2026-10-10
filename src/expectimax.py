@@ -53,7 +53,8 @@ class Expectimax:
 
         return best_move
 
-    def get_valid_moves(self, board: Bitboard) -> list[str]:
+    @staticmethod
+    def get_valid_moves(board: Bitboard) -> list[str]:
         """Return a list of valid moves for the given board."""
         valid_moves = []
         for direction in ('left', 'right', 'up', 'down'):

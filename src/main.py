@@ -4,11 +4,11 @@ from game_2048 import Game2048
 def main():
     depth = int(input("Enter the depth for the Expectimax AI (1-3): "))
     game = Game2048()
-    ai = Expectimax(depth=depth)
+    ai_2048 = Expectimax(depth=depth)
     moves = 0
 
     while not game.board.game_over_check():
-        direction = ai.get_best_move(game.board)
+        direction = ai_2048.get_best_move(game.board)
 
         if direction is None:
             break
