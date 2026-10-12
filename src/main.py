@@ -5,13 +5,14 @@ from game_2048 import Game2048
 
 def main():
     depth = int(input(
-        "Enter the search depth for the AI (between 1 and 4, default is 4): ") or 4)
+        "Enter the maximum search depth for the AI (1-4, default is 4): ") or 4)
     game = Game2048()
     ai_2048 = Expectimax(depth=depth)
     moves = 0
     start_time = perf_counter()
 
     while True:
+        search_depth = ai_2048.get_search_depth(game.board)
         direction = ai_2048.get_best_move(game.board)
 
         if direction is None:
@@ -21,7 +22,7 @@ def main():
             break
 
         moves += 1
-        print(f"\nMove {moves}: {direction}")
+        print(f"\nMove {moves}: {direction} (search depth: {search_depth})")
         print(f"Score: {game.score}")
         print("Gameboard:")
         print(game.board)
