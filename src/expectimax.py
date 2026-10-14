@@ -29,14 +29,14 @@ class Expectimax:
     def expectimax(self, board: Bitboard, depth: int | None = None) -> float:
         """Returns the expected score of a board position using the expectimax algorithm."""
         if depth is None:
-            depth = self.depth
+            depth = self.get_search_depth(board)
 
         if depth <= 0:
             return self.heuristics.evaluate(board)
 
-        key = ("max", board.return_board(), depth)
-        if key in self.transposition_table:
-            return self.transposition_table[key]
+        #key = ("max", board.return_board(), depth)
+        #if key in self.transposition_table:
+        #    return self.transposition_table[key]
 
         best_score = float("-inf")
 
@@ -51,7 +51,7 @@ class Expectimax:
                 score = self.expectimax_chance_node(moved_board, depth)
             best_score = max(best_score, score)
 
-        self.transposition_table[key] = best_score
+        #self.transposition_table[key] = best_score
         return best_score
 
     def get_best_move(self, board: Bitboard) -> str | None:
@@ -87,15 +87,18 @@ class Expectimax:
 
     def expectimax_chance_node(self, board: Bitboard, depth: int) -> float:
         """Returns the expected score of a chance node in the expectimax tree."""
+        # onko laskettu jo kertaalleen?
+        # transpositioita ei hyödynnetä, jos syvyys 2
+
         if depth <= 0:
             return self.heuristics.evaluate(board)
 
-        #key = ("chance", board.return_board(), depth)
-        #if key in self.transposition_table:
-        #    return self.transposition_table[key]
+        key = ("chance", board.return_board(), depth) # avaimeksi pelitilanne kokonaislukuna
+        if key in self.transposition_table:
+            return self.transposition_table[key]
 
-        #if board.game_over_check():
-        #    return self.heuristics.evaluate(board)
+        if board.game_over_check():
+            return self.heuristics.evaluate(board)
 
         total_score = 0.0
 
@@ -111,5 +114,5 @@ class Expectimax:
                 score = self.expectimax(new_board, depth - 1)
                 total_score += score * probability / empty_cells_len
 
-        #self.transposition_table[key] = total_score
+        self.transposition_table[key] = total_score
         return total_score
