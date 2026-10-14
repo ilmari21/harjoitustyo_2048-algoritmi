@@ -4,10 +4,12 @@ from game_2048 import Game2048
 
 
 def main():
-    depth = int(input(
-        "Enter the maximum search depth for the AI (1-4, default is 4): ") or 4)
+    min_depth = int(input(
+        "Enter the minimum search depth for the AI (2-6, default is 2): ") or 2)
+    max_depth = int(input(
+        f"Enter the maximum search depth for the AI ({min_depth}-6, default is 6): ") or 6)
     game = Game2048()
-    ai_2048 = Expectimax(depth=depth)
+    ai_2048 = Expectimax(min_depth, max_depth)
     moves = 0
     start_time = perf_counter()
 

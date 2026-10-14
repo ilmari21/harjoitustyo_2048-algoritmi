@@ -3,29 +3,28 @@ from heuristics import Heuristics
 
 
 class Expectimax:
-    MAX_DEPTH = 4
-
-    def __init__(self, depth: int = MAX_DEPTH):
-        if not 1 <= depth <= self.MAX_DEPTH:
-            raise ValueError(f"Depth must be between 1 and {self.MAX_DEPTH}.")
+    def __init__(self, min_depth: int, max_depth: int):
+        if not (2 <= min_depth <= max_depth <= 6):
+            raise ValueError("Minimum depth must be between 2 and 6, and max depth must be between minimum depth and 6.")
         self.transposition_table: dict[tuple[str, int, int], float] = {}
-        self.depth = depth
+        self.min_depth = min_depth
+        self.max_depth = max_depth
         self.heuristics = Heuristics()
 
     def get_search_depth(self, board: Bitboard) -> int:
         """Choose a deeper search as the number of empty cells decreases."""
         empty_cells = len(board.get_empty_cells())
 
-        if empty_cells > 12:
-            target_depth = 1
-        elif empty_cells > 8:
-            target_depth = 2
-        elif empty_cells > 4:
+        if empty_cells > 10:
             target_depth = 3
-        else:
+        elif empty_cells > 6:
             target_depth = 4
+        elif empty_cells > 2:
+            target_depth = 5
+        else:
+            target_depth = 6
 
-        return min(target_depth, self.depth)
+        return max(self.min_depth, min(target_depth, self.max_depth))
 
     def expectimax(self, board: Bitboard, depth: int | None = None) -> float:
         """Returns the expected score of a board position using the expectimax algorithm."""
@@ -91,12 +90,12 @@ class Expectimax:
         if depth <= 0:
             return self.heuristics.evaluate(board)
 
-        key = ("chance", board.return_board(), depth)
-        if key in self.transposition_table:
-            return self.transposition_table[key]
+        #key = ("chance", board.return_board(), depth)
+        #if key in self.transposition_table:
+        #    return self.transposition_table[key]
 
-        if board.game_over_check():
-            return self.heuristics.evaluate(board)
+        #if board.game_over_check():
+        #    return self.heuristics.evaluate(board)
 
         total_score = 0.0
 
@@ -112,5 +111,5 @@ class Expectimax:
                 score = self.expectimax(new_board, depth - 1)
                 total_score += score * probability / empty_cells_len
 
-        self.transposition_table[key] = total_score
+        #self.transposition_table[key] = total_score
         return total_score

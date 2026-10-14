@@ -16,3 +16,7 @@ def play(ctx):
 @task
 def format(ctx):
     ctx.run("autopep8 --in-place --recursive src", pty=use_pty)
+
+@task
+def lint(ctx):
+    ctx.run("pylint src", pty=use_pty)
