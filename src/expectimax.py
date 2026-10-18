@@ -5,7 +5,8 @@ from heuristics import Heuristics
 class Expectimax:
     def __init__(self, min_depth: int, max_depth: int):
         if not (2 <= min_depth <= max_depth <= 6):
-            raise ValueError("Minimum depth must be between 2 and 6, and max depth must be between minimum depth and 6.")
+            raise ValueError(
+                "Minimum depth must be between 2 and 6, and max depth must be between minimum depth and 6.")
         self.transposition_table: dict[tuple[str, int, int], float] = {}
         self.min_depth = min_depth
         self.max_depth = max_depth
@@ -34,8 +35,8 @@ class Expectimax:
         if depth <= 0:
             return self.heuristics.evaluate(board)
 
-        #key = ("max", board.return_board(), depth)
-        #if key in self.transposition_table:
+        # key = ("max", board.return_board(), depth)
+        # if key in self.transposition_table:
         #    return self.transposition_table[key]
 
         best_score = float("-inf")
@@ -51,7 +52,7 @@ class Expectimax:
                 score = self.expectimax_chance_node(moved_board, depth)
             best_score = max(best_score, score)
 
-        #self.transposition_table[key] = best_score
+        # self.transposition_table[key] = best_score
         return best_score
 
     def get_best_move(self, board: Bitboard) -> str | None:
@@ -93,7 +94,8 @@ class Expectimax:
         if depth <= 0:
             return self.heuristics.evaluate(board)
 
-        key = ("chance", board.return_board(), depth) # avaimeksi pelitilanne kokonaislukuna
+        # avaimeksi pelitilanne kokonaislukuna
+        key = ("chance", board.return_board(), depth)
         if key in self.transposition_table:
             return self.transposition_table[key]
 
