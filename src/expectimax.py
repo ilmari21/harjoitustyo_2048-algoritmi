@@ -35,9 +35,9 @@ class Expectimax:
         if depth <= 0:
             return self.heuristics.evaluate(board)
 
-        # key = ("max", board.return_board(), depth)
-        # if key in self.transposition_table:
-        #    return self.transposition_table[key]
+        key = ("max", board.return_board(), depth)
+        if key in self.transposition_table:
+           return self.transposition_table[key]
 
         best_score = float("-inf")
 
@@ -52,7 +52,7 @@ class Expectimax:
                 score = self.expectimax_chance_node(moved_board, depth)
             best_score = max(best_score, score)
 
-        # self.transposition_table[key] = best_score
+        self.transposition_table[key] = best_score
         return best_score
 
     def get_best_move(self, board: Bitboard) -> str | None:
@@ -88,13 +88,10 @@ class Expectimax:
 
     def expectimax_chance_node(self, board: Bitboard, depth: int) -> float:
         """Returns the expected score of a chance node in the expectimax tree."""
-        # onko laskettu jo kertaalleen?
-        # transpositioita ei hyödynnetä, jos syvyys 2
 
         if depth <= 0:
             return self.heuristics.evaluate(board)
 
-        # avaimeksi pelitilanne kokonaislukuna
         key = ("chance", board.return_board(), depth)
         if key in self.transposition_table:
             return self.transposition_table[key]
