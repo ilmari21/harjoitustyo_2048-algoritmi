@@ -3,14 +3,18 @@ from heuristics import Heuristics
 
 
 class Expectimax:
-    def __init__(self, min_depth: int, max_depth: int):
+    def __init__(
+            self,
+            min_depth: int,
+            max_depth: int,
+            heuristics: Heuristics | None = None):
         if not (2 <= min_depth <= max_depth <= 6):
             raise ValueError(
                 "Minimum depth must be between 2 and 6, and max depth must be between minimum depth and 6.")
         self.transposition_table: dict[tuple[str, int, int], float] = {}
         self.min_depth = min_depth
         self.max_depth = max_depth
-        self.heuristics = Heuristics()
+        self.heuristics = heuristics if heuristics is not None else Heuristics()
 
     def get_search_depth(self, board: Bitboard) -> int:
         """Choose a deeper search as the number of empty cells decreases."""
@@ -63,10 +67,7 @@ class Expectimax:
         best_score = float("-inf")
 
         for direction, moved_board in self.get_valid_moves(board):
-            if search_depth == 1:
-                score = self.heuristics.evaluate(moved_board)
-            else:
-                score = self.expectimax_chance_node(moved_board, search_depth)
+            score = self.expectimax_chance_node(moved_board, search_depth)
             if score > best_score:
                 best_score = score
                 best_move = direction

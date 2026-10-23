@@ -13,9 +13,6 @@ class Heuristics:
 
     def evaluate(self, board: Bitboard) -> float:
         """Returns a score based on the evaluation."""
-        if not board.get_empty_cells() and board.game_over_check():
-            return self.GAME_OVER_PENALTY
-
         empty_cells = 0
         snake_score = 0
         packed_board = board.return_board()
@@ -25,5 +22,8 @@ class Heuristics:
             if cell == 0:
                 empty_cells += 1
             snake_score += cell * weight
+
+        if empty_cells == 0 and board.game_over_check():
+            return self.GAME_OVER_PENALTY
 
         return empty_cells * self.EMPTY_CELL_WEIGHT + snake_score
