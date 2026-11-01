@@ -2,6 +2,8 @@ from bitboard import Bitboard
 
 
 class Heuristics:
+    """Class implementing heuristics for evaluating the 2048 game board."""
+
     SNAKE_WEIGHTS = (
         4 ** 15, 4 ** 14, 4 ** 13, 4 ** 12,
         4 ** 8, 4 ** 9, 4 ** 10, 4 ** 11,
@@ -12,7 +14,15 @@ class Heuristics:
     GAME_OVER_PENALTY = -1000000000000.0
 
     def evaluate(self, board: Bitboard) -> float:
-        """Returns a score based on the evaluation."""
+        """Return the heuristic score for a board position.
+
+        Args:
+            board (Bitboard): The game board to evaluate.
+
+        Returns:
+            The heuristic score for the board.
+        """
+
         empty_cells = 0
         snake_score = 0
         packed_board = board.return_board()

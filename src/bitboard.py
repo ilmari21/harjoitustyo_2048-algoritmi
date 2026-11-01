@@ -3,38 +3,86 @@ from move_logic import move_line
 
 
 class Bitboard:
+    """Class representing a 4x4 game board using a 64-bit integer."""
+
     CELL_CONSTANT = 0xF
     BOARD_CONSTANT = (1 << 64) - 1
     ROW_CONSTANT = (1 << 16) - 1
 
     def __init__(self, board: int = 0):
+        """Constructor of the class; initializes the board with a 64-bit integer.
+
+        Args:
+            board (int): A 64-bit integer representing the game board.
+        """
+
         self.board: int = board & self.BOARD_CONSTANT
 
     def get_cell(self, index: int) -> int:
-        """Returns the 4-bit exponent stored in a cell."""
+        """Get the 4-bit exponent stored in a cell.
+
+        Args:
+            index (int): The index of the cell to get.
+
+        Returns:
+            The 4-bit exponent stored in a cell.
+        """
+
         return (self.board >> (index * 4)) & self.CELL_CONSTANT
 
     def set_cell(self, index: int, value: int) -> 'Bitboard':
-        """Returns a board with one 4-bit cell replaced."""
+        """Return a new Bitboard instance with the specified cell updated.
+        
+        Args:
+            index (int): The index of the cell to set.
+            value (int): The 4-bit exponent to set in the cell.
+
+        Returns:
+            A new Bitboard instance with the specified cell updated.
+        """
+
         cell_constant = self.CELL_CONSTANT << (index * 4)
         board = self.board & ~cell_constant
         board |= (value & self.CELL_CONSTANT) << (index * 4)
         return Bitboard(board)
 
     def get_bit(self, index: int) -> bool:
-        """Returns boolean indicating if the bit is set or not."""
+        """Check if a bit is set in the board.
+
+        Args:
+            index (int): The index of the bit to check.
+
+        Returns:
+            True if the bit is set, False otherwise.
+        """
+
         return (self.board >> index) & 1 == 1
 
     def return_board(self) -> int:
-        """Returns the board as an integer."""
+        """Return the board as an integer.
+        
+        Returns:
+            The 64-bit integer representing the game board.
+        """
+
         return self.board
 
     def get_empty_cells(self) -> list[int]:
-        """Return the indexes of all empty cells."""
+        """Return the indexes of all empty cells.
+
+        Returns:
+            A list of integers representing the indexes of all empty cells.
+        """
+
         return [index for index in range(16) if self.get_cell(index) == 0]
 
     def game_over_check(self) -> bool:
-        """Checks whether it is possible to make any more moves on the board."""
+        """Check whether it is possible to make any more moves on the board.
+
+        Returns:
+            True if no moves are possible, False otherwise.
+        """
+
         directions = ('left', 'right', 'up', 'down')
         return all(
             self.move(direction).return_board() == self.board
@@ -43,22 +91,56 @@ class Bitboard:
 
     @staticmethod
     def _move_line(cells: list[int], reverse: bool = False) -> list[int]:
-        """Move and merge four cells."""
+        """Move and merge four cells.
+
+        Args:
+            cells (list[int]): A list of four 4-bit exponents.
+            reverse (bool): If True, the cells are processed in reverse order.
+
+        Returns:
+            A list of four 4-bit exponents after the move and merge.
+        """
+
         return move_line(cells, reverse)
 
     def get_row(self, index: int) -> int:
-        """Return a row as a 16-bit value containing 4 packed cells."""
+        """Get a packed row from the board.
+
+        Args:
+            index (int): The index of the row to get.
+
+        Returns:
+            A 16-bit value representing the row.
+        """
+
         return (self.board >> (index * 16)) & self.ROW_CONSTANT
 
     def set_row(self, index: int, row: int) -> 'Bitboard':
-        """Return a board with 1 packed row replaced."""
+        """Set a packed row in the board and return a new Bitboard instance.
+
+        Args:
+            index (int): The index of the row to set.
+            row (int): The 16-bit value representing the new row.
+
+        Returns:
+            A new Bitboard instance with the specified row replaced.
+        """
+
         row_mask = self.ROW_CONSTANT << (index * 16)
         board = self.board & ~row_mask
         board |= (row & self.ROW_CONSTANT) << (index * 16)
         return Bitboard(board)
 
     def move(self, direction: str) -> 'Bitboard':
-        """Execute the requested move and return the resulting board."""
+        """Move the board in the specified direction and return a new Bitboard instance.
+
+        Args:
+            direction (str): The direction of the move ('left', 'right', 'up', 'down').
+
+        Returns:
+            A new Bitboard instance representing the board after the move.
+        """
+
         moves = {
             'left': self.move_left,
             'right': self.move_right,
@@ -72,23 +154,51 @@ class Bitboard:
             raise ValueError(f"Invalid direction: {direction}") from None
 
     def move_left(self) -> 'Bitboard':
-        """Moves the board left and returns a new Bitboard instance."""
+        """Move the board left and return a new Bitboard instance.
+
+        Returns:
+            A new Bitboard instance representing the board after the left move.
+        """
+
         return self._move_rows('row_left')
 
     def move_right(self) -> 'Bitboard':
-        """Move the board right and return a new Bitboard instance."""
+        """Move the board right and return a new Bitboard instance.
+
+        Returns:
+            A new Bitboard instance representing the board after the right move.
+        """
+
         return self._move_rows('row_right')
 
     def move_up(self) -> 'Bitboard':
-        """Moves the board up and returns a new Bitboard instance."""
+        """Move the board up and return a new Bitboard instance.
+
+        Returns:
+            A new Bitboard instance representing the board after the up move.
+        """
+
         return self._move_columns('col_up')
 
     def move_down(self) -> 'Bitboard':
-        """Moves the board down and returns a new Bitboard instance."""
+        """Move the board down and return a new Bitboard instance.
+
+        Returns:
+            A new Bitboard instance representing the board after the down move.
+        """
+
         return self._move_columns('col_down')
 
     def _move_rows(self, table_name: str) -> 'Bitboard':
-        """Move the rows of the board."""
+        """Move the rows of the board.
+
+        Args:
+            table_name (str): The name of the lookup table to use.
+
+        Returns:
+            A new Bitboard instance representing the board after the rows are moved.
+        """
+
         table = get_lookup_tables()[table_name]
         value = self.board
         moved_board = (
@@ -101,7 +211,15 @@ class Bitboard:
         return Bitboard(moved_board)
 
     def _move_columns(self, table_name: str) -> 'Bitboard':
-        """Move the columns of the board."""
+        """Move the columns of the board.
+
+        Args:
+            table_name (str): The name of the lookup table to use.
+
+        Returns:
+            A new Bitboard instance representing the board after the columns are moved.
+        """
+
         table = get_lookup_tables()[table_name]
         value = self.board
         moved_board = 0
@@ -125,7 +243,12 @@ class Bitboard:
         return Bitboard(moved_board)
 
     def __str__(self) -> str:
-        """Returns a string representation of the current board."""
+        """Return a string representation of the current board.
+
+        Returns:
+            A string representing the current board.
+        """
+
         rows = []
         for row in range(4):
             cells = []

@@ -5,7 +5,15 @@ CELL_CONSTANT = 0xF
 
 
 def _pack_line(cells: list[int]) -> int:
-    """Pack four 4-bit cells into a single 16-bit integer."""
+    """Pack four 4-bit cells into a single 16-bit integer.
+
+    Args:
+        cells (list[int]): A list of four 4-bit integers representing the cells.
+
+    Returns:
+        The 16-bit integer representing the packed cells.
+    """
+
     return sum(
         (cell & CELL_CONSTANT) << (index * 4)
         for index, cell in enumerate(cells)
@@ -13,13 +21,28 @@ def _pack_line(cells: list[int]) -> int:
 
 
 def _move_packed_line(line: int, reverse: bool = False) -> int:
-    """Move and merge a packed line of 4 cells."""
+    """Move and merge a packed line of 4 cells.
+
+    Args:       
+        line (int): A 16-bit integer representing the packed cells.
+        reverse (bool): If True, the cells are processed in reverse order.
+
+    Returns:
+        The 16-bit integer representing the moved and merged cells.
+    """
+
     cells = [(line >> (index * 4)) & CELL_CONSTANT for index in range(4)]
     return _pack_line(move_line(cells, reverse))
 
 
 @cache
 def _init_lookup_tables():
+    """Initialize lookup tables for moving rows and columns.
+
+    Returns:
+        A dictionary containing lookup tables for moving rows and columns.
+    """
+
     return {
         'row_left': [_move_packed_line(row) for row in range(65536)],
         'row_right': [_move_packed_line(row, reverse=True) for row in range(65536)],
@@ -29,5 +52,10 @@ def _init_lookup_tables():
 
 
 def get_lookup_tables():
-    """Return the lookup tables for moving rows and columns."""
+    """Return the lookup tables for moving rows and columns.
+
+    Returns:
+        A dictionary containing lookup tables for moving rows and columns.
+    """
+
     return _init_lookup_tables()

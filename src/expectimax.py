@@ -3,11 +3,21 @@ from heuristics import Heuristics
 
 
 class Expectimax:
+    """Class implementing the Expectimax algorithm for the 2048 game."""
+
     def __init__(
             self,
             min_depth: int,
             max_depth: int,
             heuristics: Heuristics | None = None):
+        """Constructor of the class; initializes the Expectimax algorithm with the specified parameters.
+
+        Args:
+            min_depth (int): The minimum search depth for the Expectimax algorithm.
+            max_depth (int): The maximum search depth for the Expectimax algorithm.
+            heuristics (Heuristics | None): An instance of the Heuristics class for evaluating board positions.
+        """
+
         if not 2 <= min_depth <= max_depth <= 6:
             raise ValueError(
                 "Minimum depth must be between 2 and 6, and max depth must be between minimum depth and 6.")
@@ -17,7 +27,15 @@ class Expectimax:
         self.heuristics = heuristics if heuristics is not None else Heuristics()
 
     def get_search_depth(self, board: Bitboard) -> int:
-        """Choose a deeper search as the number of empty cells decreases."""
+        """Choose a deeper search as the number of empty cells decreases.
+
+        Args:
+            board (Bitboard): The current game board.
+
+        Returns:
+            The search depth to use for the current board.
+        """
+
         empty_cells = len(board.get_empty_cells())
 
         if empty_cells > 10:
@@ -32,7 +50,17 @@ class Expectimax:
         return max(self.min_depth, min(target_depth, self.max_depth))
 
     def expectimax(self, board: Bitboard, depth: int | None = None) -> float:
-        """Returns the expected score of a board position using the expectimax algorithm."""
+        """Return the best evaluated score from a max node.
+
+        Args:
+            board (Bitboard): The current game board.
+            depth (int | None): Remaining search depth. If omitted, the depth is selected
+                from the number of empty cells.
+
+        Returns:
+            The highest heuristic or expected score reachable from the node.
+        """
+
         if depth is None:
             depth = self.get_search_depth(board)
 
@@ -60,7 +88,15 @@ class Expectimax:
         return best_score
 
     def get_best_move(self, board: Bitboard) -> str | None:
-        """Returns the valid move with the highest expected score."""
+        """Return the valid move with the highest expected score.
+
+        Args:
+            board (Bitboard): The current game board.
+
+        Returns:
+            The valid move with the highest expected score, or None if no valid moves are available.
+        """
+
         self.transposition_table.clear()
         search_depth = self.get_search_depth(board)
         best_move = None
@@ -76,7 +112,15 @@ class Expectimax:
 
     @staticmethod
     def get_valid_moves(board: Bitboard) -> list[tuple[str, Bitboard]]:
-        """Return a list of valid moves for the given board."""
+        """Return a list of valid moves for the given board.
+
+        Args:
+            board (Bitboard): The current game board.
+
+        Returns:
+            A list of tuples containing the direction and the resulting board for each valid move.
+        """
+
         current_board = board.return_board()
         valid_moves = []
 
@@ -88,7 +132,15 @@ class Expectimax:
         return valid_moves
 
     def expectimax_chance_node(self, board: Bitboard, depth: int) -> float:
-        """Returns the expected score of a chance node in the expectimax tree."""
+        """Calculate the expected score after a random tile placement.
+
+        Args:
+            board (Bitboard): The board after a player move.
+            depth (int): Remaining search depth.
+
+        Returns:
+            The probability-weighted expected score of the resulting states.
+        """
 
         if depth <= 0:
             return self.heuristics.evaluate(board)

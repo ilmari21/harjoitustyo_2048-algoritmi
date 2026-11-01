@@ -2,6 +2,8 @@ from game_2048 import Game2048
 
 
 def human_playtest():
+    """Run an interactive console game for a human player."""
+
     game = Game2048()
     print("Gameboard:")
     print(game.board)

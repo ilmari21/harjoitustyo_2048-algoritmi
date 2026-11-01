@@ -4,6 +4,8 @@ from game_2048 import Game2048
 
 
 def main():
+    """Run an AI-controlled 2048 game in the console."""
+
     min_depth = int(input(
         "Enter the minimum search depth for the AI (2-6, default is 4): ") or 4)
     max_depth = int(input(
@@ -33,6 +35,8 @@ def main():
 
 
 def _game_summary(game: Game2048, moves: int, start_time: float) -> None:
+    """Print a summary of the completed game."""
+
     elapsed_seconds = int(perf_counter() - start_time)
     minutes, seconds = divmod(elapsed_seconds, 60)
     print(f"\nGame over after {moves} moves.")

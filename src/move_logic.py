@@ -1,7 +1,16 @@
 def move_line(cells: list[int], reverse: bool = False) -> list[int]:
-    """Move and merge 4 cells."""
+    """Move and merge four cells.
+
+    Args:
+        cells (list[int]): A list of four 4-bit exponents.
+        reverse (bool): Whether to process the cells in reverse order.
+
+    Returns:
+        A list of four 4-bit exponents representing the moved and merged cells.
+    """
+
     if reverse:
-        cells.reverse()
+        cells = cells[::-1]
 
     compact_cells = [cell for cell in cells if cell != 0]
     merged = []
@@ -16,5 +25,5 @@ def move_line(cells: list[int], reverse: bool = False) -> list[int]:
 
     result = merged + [0] * (4 - len(merged))
     if reverse:
-        result.reverse()
+        result = result[::-1]
     return result
