@@ -32,7 +32,7 @@ class Bitboard:
 
     def set_cell(self, index: int, value: int) -> 'Bitboard':
         """Return a new Bitboard instance with the specified cell updated.
-        
+
         Args:
             index (int): The index of the cell to set.
             value (int): The 4-bit exponent to set in the cell.
@@ -60,7 +60,7 @@ class Bitboard:
 
     def return_board(self) -> int:
         """Return the board as an integer.
-        
+
         Returns:
             The 64-bit integer representing the game board.
         """

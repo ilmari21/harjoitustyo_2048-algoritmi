@@ -10,17 +10,20 @@ class Expectimax:
             min_depth: int,
             max_depth: int,
             heuristics: Heuristics | None = None):
-        """Constructor of the class; initializes the Expectimax algorithm with the specified parameters.
+        """Constructor of the class; initializes the Expectimax algorithm
+        with the specified parameters.
 
         Args:
             min_depth (int): The minimum search depth for the Expectimax algorithm.
             max_depth (int): The maximum search depth for the Expectimax algorithm.
-            heuristics (Heuristics | None): An instance of the Heuristics class for evaluating board positions.
+            heuristics (Heuristics | None): An instance of the Heuristics
+                class for evaluating board positions.
         """
 
         if not 2 <= min_depth <= max_depth <= 6:
             raise ValueError(
-                "Minimum depth must be between 2 and 6, and max depth must be between minimum depth and 6.")
+                "Minimum depth must be between 2 and 6, and max depth must "
+                "be between minimum depth and 6.")
         self.transposition_table: dict[tuple[str, int, int], float] = {}
         self.min_depth = min_depth
         self.max_depth = max_depth

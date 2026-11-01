@@ -3,13 +3,17 @@ from bitboard import Bitboard
 
 
 class Game2048:
-    """Class representing the 2048 game logic, including board state, score, and tile spawning."""
+    """Class representing the 2048 game logic, including board state,
+    score, and tile spawning."""
 
     def __init__(self, rng: random.Random | None = None):
-        """Constructor of the class; initializes the game with a random number generator and sets up the initial board state.
+        """Constructor of the class; initializes the game with a random
+        number generator and sets up the initial board state.
 
         Args:
-            rng (random.Random | None): An optional random number generator for reproducibility. If None, a new random generator is created.
+            rng (random.Random | None): An optional random number generator
+                for reproducibility. If None, a new random generator is
+                created.
         """
 
         self.rng = rng if rng is not None else random.Random()

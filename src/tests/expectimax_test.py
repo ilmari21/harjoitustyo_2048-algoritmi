@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock
 
 from bitboard import Bitboard
 from expectimax import Expectimax
@@ -82,3 +83,135 @@ class TestExpectimax(unittest.TestCase):
         ]
 
         self.assertEqual(adjacent_moves, ["left", "down"])
+
+    def test_get_search_depth_increases_as_empty_cells_decrease(self):
+        ai = Expectimax(min_depth=2, max_depth=6)
+
+        for empty_cells, expected_depth in (
+                (11, 3),
+                (7, 4),
+                (3, 5),
+                (2, 6)):
+            board = Bitboard()
+            for index in range(16 - empty_cells):
+                board = board.set_cell(index, 1)
+
+            self.assertEqual(ai.get_search_depth(board), expected_depth)
+
+    def test_invalid_search_depths_raise_value_error(self):
+        for min_depth, max_depth in (
+                (1, 2),
+                (2, 1),
+                (2, 7),
+                (7, 7)):
+            with self.subTest(min_depth=min_depth, max_depth=max_depth):
+                with self.assertRaises(ValueError):
+                    Expectimax(min_depth, max_depth)
+
+    def test_expectimax_uses_search_depth_when_depth_is_not_given(self):
+        heuristics = Mock()
+        heuristics.evaluate.return_value = 42.0
+        ai = Expectimax(min_depth=2, max_depth=2, heuristics=heuristics)
+        ai.get_search_depth = Mock(return_value=0)
+        board = Bitboard()
+
+        self.assertEqual(ai.expectimax(board), 42.0)
+        ai.get_search_depth.assert_called_once_with(board)
+        heuristics.evaluate.assert_called_once_with(board)
+
+    def test_expectimax_evaluates_board_when_depth_is_zero(self):
+        heuristics = Mock()
+        heuristics.evaluate.return_value = 42.0
+        ai = Expectimax(min_depth=2, max_depth=2, heuristics=heuristics)
+        board = Bitboard().set_cell(0, 1)
+
+        self.assertEqual(ai.expectimax(board, depth=0), 42.0)
+        heuristics.evaluate.assert_called_once_with(board)
+
+    def test_expectimax_returns_cached_score(self):
+        ai = Expectimax(min_depth=2, max_depth=2)
+        board = Bitboard().set_cell(0, 1)
+        ai.transposition_table[("max", board.return_board(), 2)] = 123.0
+
+        self.assertEqual(ai.expectimax(board, depth=2), 123.0)
+
+    def test_expectimax_evaluates_board_without_valid_moves(self):
+        heuristics = Mock()
+        heuristics.evaluate.return_value = 42.0
+        ai = Expectimax(min_depth=2, max_depth=2, heuristics=heuristics)
+        board = Bitboard()
+        for index in range(16):
+            row, column = divmod(index, 4)
+            value = 1 if (row + column) % 2 == 0 else 2
+            board = board.set_cell(index, value)
+
+        self.assertEqual(ai.expectimax(board, depth=2), 42.0)
+        heuristics.evaluate.assert_called_once_with(board)
+
+    def test_expectimax_evaluates_moved_board_at_depth_one(self):
+        heuristics = Mock()
+        heuristics.evaluate.return_value = 42.0
+        board = self.create_one_way_test_board()
+        ai = Expectimax(2, 2, heuristics=heuristics)
+        valid_moves = ai.get_valid_moves(board)
+
+        self.assertEqual(
+            ai.expectimax(board, depth=1),
+            42.0,
+        )
+        self.assertEqual(heuristics.evaluate.call_count, len(valid_moves))
+
+    def test_expectimax_uses_chance_nodes_at_depth_greater_than_one(self):
+        board = self.create_one_way_test_board()
+        ai = Expectimax(2, 2)
+        ai.expectimax_chance_node = Mock(return_value=42.0)
+        valid_moves = ai.get_valid_moves(board)
+
+        self.assertEqual(
+            ai.expectimax(board, depth=2),
+            42.0,
+        )
+        self.assertEqual(
+            ai.expectimax_chance_node.call_count,
+            len(valid_moves),
+        )
+
+    def test_chance_node_evaluates_board_when_depth_is_zero(self):
+        heuristics = Mock()
+        heuristics.evaluate.return_value = 42.0
+        ai = Expectimax(2, 2, heuristics=heuristics)
+        board = Bitboard().set_cell(0, 1)
+
+        self.assertEqual(ai.expectimax_chance_node(board, depth=0), 42.0)
+        heuristics.evaluate.assert_called_once_with(board)
+
+    def test_chance_node_returns_cached_score(self):
+        ai = Expectimax(2, 2)
+        board = Bitboard().set_cell(0, 1)
+        ai.transposition_table[("chance", board.return_board(), 2)] = 123.0
+
+        self.assertEqual(ai.expectimax_chance_node(board, depth=2), 123.0)
+
+    def test_chance_node_evaluates_game_over_board(self):
+        heuristics = Mock()
+        heuristics.evaluate.return_value = 42.0
+        ai = Expectimax(2, 2, heuristics=heuristics)
+        board = Bitboard()
+        for index in range(16):
+            row, column = divmod(index, 4)
+            value = 1 if (row + column) % 2 == 0 else 2
+            board = board.set_cell(index, value)
+
+        self.assertEqual(ai.expectimax_chance_node(board, depth=2), 42.0)
+        heuristics.evaluate.assert_called_once_with(board)
+
+    def test_chance_node_evaluates_full_board_without_moves(self):
+        heuristics = Mock()
+        heuristics.evaluate.return_value = 42.0
+        ai = Expectimax(2, 2, heuristics=heuristics)
+        board = Bitboard()
+        for index in range(16):
+            board = board.set_cell(index, 1)
+
+        self.assertEqual(ai.expectimax_chance_node(board, depth=2), 42.0)
+        heuristics.evaluate.assert_called_once_with(board)
