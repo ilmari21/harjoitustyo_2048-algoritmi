@@ -62,6 +62,13 @@ eksponentin että laattojen oikean järjestyksen.
 Satunnaisuutta hallitaan osassa testeistä `random.Random(0)`-generaattorilla.
 Näin testit ovat toistettavia, vaikka uuden laatan paikka valitaan satunnaisesti.
 
+Satunnaisen laatan toimintaa voidaan havainnoida myös peliä pelaamalla. Kun
+laillinen siirto muuttaa pelilautaa, laudalle ilmestyy yksi uusi laatta
+tyhjään ruutuun. Uuden laatan arvoksi voidaan havaita joko 2 tai 4: 2-laattoja
+ilmestyy selvästi useammin kuin 4-laattoja. Yksittäinen peli ei kuitenkaan
+riitä todentamaan jakaumaa tilastollisesti, vaan havainto kertoo lähinnä, että
+uuden laatan luominen ja sen arvo toimivat odotetulla tavalla.
+
 ### Heuristiikka
 
 `heuristics_test.py` laskee odotetun heuristisen arvon itse ja vertaa sitä

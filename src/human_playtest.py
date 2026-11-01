@@ -1,12 +1,18 @@
 from game_2048 import Game2048
 
 
+def display_board(game):
+    """Display the current game board."""
+
+    print("Gameboard:")
+    print(game.board)
+
+
 def human_playtest():
     """Run an interactive console game for a human player."""
 
     game = Game2048()
-    print("Gameboard:")
-    print(game.board)
+    display_board(game)
     move_directions = {"w": "up", "a": "left", "s": "down", "d": "right"}
     moves = 0
 
@@ -17,8 +23,7 @@ def human_playtest():
                 moves += 1
                 print(f"\nMove {moves}")
                 print(f"Score: {game.score}")
-                print("Gameboard:")
-                print(game.board)
+                display_board(game)
             else:
                 print("Invalid move. Try again.")
         else:
@@ -26,8 +31,7 @@ def human_playtest():
 
     print(f"\nGame over after {moves} moves.")
     print(f"Final Score: {game.score}")
-    print("Gameboard:")
-    print(game.board)
+    display_board(game)
 
 
 if __name__ == "__main__":
