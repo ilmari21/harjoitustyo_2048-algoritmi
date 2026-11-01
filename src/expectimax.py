@@ -8,7 +8,7 @@ class Expectimax:
             min_depth: int,
             max_depth: int,
             heuristics: Heuristics | None = None):
-        if not (2 <= min_depth <= max_depth <= 6):
+        if not 2 <= min_depth <= max_depth <= 6:
             raise ValueError(
                 "Minimum depth must be between 2 and 6, and max depth must be between minimum depth and 6.")
         self.transposition_table: dict[tuple[str, int, int], float] = {}
@@ -41,7 +41,7 @@ class Expectimax:
 
         key = ("max", board.return_board(), depth)
         if key in self.transposition_table:
-           return self.transposition_table[key]
+            return self.transposition_table[key]
 
         best_score = float("-inf")
 

@@ -36,17 +36,6 @@ class TestBitboard(unittest.TestCase):
         expected_empty_cells = [i for i in range(16) if i % 2 != 0]
         self.assertEqual(empty_cells, expected_empty_cells)
 
-    # def test_game_over_check(self): # fails
-    #    board = Bitboard()
-    #    for index in range(16):
-    #        board = board.set_cell(index, 1)
-    #
-    #    self.assertTrue(board.game_over_check())
-    #
-    #    board = Bitboard()
-    #    board = board.set_cell(0, 1)
-    #    self.assertFalse(board.game_over_check())
-
     def test_move_invalid_direction(self):
         board = Bitboard()
         with self.assertRaises(ValueError):
@@ -60,7 +49,18 @@ class TestBitboard(unittest.TestCase):
             Bitboard._move_line([8, 8, 16, 16]), [9, 17, 0, 0])
 
     def test_set_and_get_row(self):
-        pass  # WIP
+        board = Bitboard()
+        row = 1 | (2 << 4) | (3 << 8) | (4 << 12)
+
+        board = board.set_row(1, row)
+
+        self.assertEqual(board.get_row(1), row)
+        self.assertEqual(
+            [board.get_cell(index) for index in range(4, 8)],
+            [1, 2, 3, 4],
+        )
+        self.assertEqual(board.get_row(0), 0)
+        self.assertEqual(board.get_row(2), 0)
 
     def test_move_rows_left(self):
         board = Bitboard()
@@ -105,3 +105,16 @@ class TestBitboard(unittest.TestCase):
         self.assertEqual(moved_board.get_cell(4), 0)
         self.assertEqual(moved_board.get_cell(8), 2)
         self.assertEqual(moved_board.get_cell(12), 3)
+
+    def test_str(self):
+        board = Bitboard()
+        board = board.set_cell(0, 1)
+        board = board.set_cell(5, 2)
+
+        self.assertEqual(
+            str(board),
+            "  2 |   0 |   0 |   0\n"
+            "  0 |   4 |   0 |   0\n"
+            "  0 |   0 |   0 |   0\n"
+            "  0 |   0 |   0 |   0",
+        )

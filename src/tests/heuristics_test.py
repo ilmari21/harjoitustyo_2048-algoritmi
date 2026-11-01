@@ -34,3 +34,15 @@ class TestHeuristics(unittest.TestCase):
             heuristics.evaluate(full_board),
             sum(Heuristics.SNAKE_WEIGHTS),
         )
+
+    def test_evaluate_returns_game_over_penalty_for_game_over_board(self):
+        board = Bitboard()
+        for index in range(16):
+            row, column = divmod(index, 4)
+            value = 1 if (row + column) % 2 == 0 else 2
+            board = board.set_cell(index, value)
+
+        self.assertEqual(
+            Heuristics().evaluate(board),
+            Heuristics.GAME_OVER_PENALTY,
+        )
